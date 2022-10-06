@@ -7,7 +7,11 @@ const userRoute = require("./routes/users");
 const eventRoute = require("./routes/events");
 const postRoute = require("./routes/posts");
 const teamRoute = require("./routes/team");
+const bloodRoute = require("./routes/blood");
+const aksharsala= require("./routes/aksharshalafront");
 const categoryRoute = require("./routes/categories");
+const getInRoute = require("./routes/getin");
+const joinRoute = require("./routes/join");
 const testimonialRoute= require("./routes/testimonial")
 const multer = require("multer");
 const path = require("path");
@@ -16,7 +20,7 @@ const path = require("path");
 dotenv.config();
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "/images")));
-
+app.use(express.urlencoded({extended:true}));
 
 // connecting to the mongoDB database
 mongoose
@@ -48,6 +52,12 @@ app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/events", eventRoute);
 app.use("/api/teams", teamRoute);
+app.use("/api/getin", getInRoute);
+app.use("/api/join", joinRoute);
+app.use("/api/akshar", aksharsala);
+
+
+app.use("/api/blood", bloodRoute);
 app.use("/api/testimonial", testimonialRoute);
 app.use("/api/categories", categoryRoute);
 
