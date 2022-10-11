@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Link } = require("react-router-dom");
 
 const AkfrontSchema = new mongoose.Schema(
   {
@@ -9,29 +8,27 @@ const AkfrontSchema = new mongoose.Schema(
       unique: true,
     },
     subject: {
-        type: String,
-        required: false,
-        unique: true,
-      },
+      type: String,
+      required: false,
+      unique: true,
+    },
     desc: {
-        type: String,
-        required: false,
-        unique: true,
-      },
-    link:{
-        type:String,
-        required:true,
-        
+      type: String,
+      required: false,
+      unique: true,
     },
-    photo:{
-        type:String,
-        required:false,
+    link: {
+      type: String,
+      required: true,
     },
-    featured:{
-      type:Boolean,
-      required:true,
-    }
-   
+    photo: {
+      type: String,
+      required: false,
+    },
+    featured: {
+      type: Boolean,
+      required: true,
+    },
   },
   { timestamps: true }
 );

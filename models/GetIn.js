@@ -1,10 +1,7 @@
-const mongoose= require("mongoose");
-
-const { Link } = require("react-router-dom");
+const mongoose = require("mongoose");
 
 const GetInSchema = new mongoose.Schema(
   {
-   
     email: {
       type: String,
       required: false,
@@ -14,5 +11,3 @@ const GetInSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("GetIn", GetInSchema);
-
-

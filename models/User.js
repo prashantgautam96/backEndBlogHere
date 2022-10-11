@@ -20,6 +20,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    is_admin: {
+      type: Boolean,
+      default: false,
+    },
+    is_super_admin: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

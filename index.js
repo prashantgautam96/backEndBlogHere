@@ -8,27 +8,33 @@ const eventRoute = require("./routes/events");
 const postRoute = require("./routes/posts");
 const teamRoute = require("./routes/team");
 const bloodRoute = require("./routes/blood");
-const aksharsala= require("./routes/aksharshalafront");
+const aksharsala = require("./routes/aksharshalafront");
 const categoryRoute = require("./routes/categories");
 const getInRoute = require("./routes/getin");
 const joinRoute = require("./routes/join");
-const testimonialRoute= require("./routes/testimonial")
+const testimonialRoute = require("./routes/testimonial");
 const multer = require("multer");
 const path = require("path");
-
-// to access dotenv data++ to read json file++ to take static data 
+const cors = require("cors");
+const { deserializeUser } = require("./middleware/deserializerUser");
+const helmet = require("helmet");
+// to access dotenv data++ to read json file++ to take static data
 dotenv.config();
+// app.use(cors);
+
+app.use(helmet());
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "/images")));
-app.use(express.urlencoded({extended:true}));
-
+app.use(express.urlencoded({ extended: true }));
+app.use(deserializeUser);
 // connecting to the mongoDB database
+console.log(process.env.MONGO_URL);
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify:true
+    useFindAndModify: true,
   })
   .then(console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
@@ -56,11 +62,13 @@ app.use("/api/getin", getInRoute);
 app.use("/api/join", joinRoute);
 app.use("/api/akshar", aksharsala);
 
-
 app.use("/api/blood", bloodRoute);
 app.use("/api/testimonial", testimonialRoute);
 app.use("/api/categories", categoryRoute);
 
-app.listen("5000", () => {
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
   console.log("Backend is running.");
+  console.log(`Port ${PORT}...`);
 });

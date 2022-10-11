@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Link } = require("react-router-dom");
 
 const TestimoniaSchema = new mongoose.Schema(
   {

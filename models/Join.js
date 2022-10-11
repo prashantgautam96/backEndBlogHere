@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Link } = require("react-router-dom");
 
 const JoinSchema = new mongoose.Schema(
   {
@@ -20,7 +19,6 @@ const JoinSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    
   },
   { timestamps: true }
 );

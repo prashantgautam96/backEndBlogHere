@@ -1,11 +1,15 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
-const Event= require("../models/Events");
+const Event = require("../models/Events");
+const requireUser = require("../middleware/requireUser");
 
 //CREATE EVENT
-router.post("/", async (req, res) => {
-  const newEvent = new Event(req.body);
+router.post("/", [requireUser], async (req, res) => {
+  const newEvent = new Event({
+    ...req.body,
+    username: res.locals.user.username,
+  });
   try {
     const savedEvent = await newEvent.save();
     res.status(200).json(savedEvent);
@@ -15,10 +19,10 @@ router.post("/", async (req, res) => {
 });
 
 //UPDATE POST
-router.put("/:id", async (req, res) => {
+router.put("/:id", [requireUser], async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
-    if (event.username === req.body.username) {
+    if (event.username === res.locals.user.username) {
       try {
         const updatedEvent = await Event.findByIdAndUpdate(
           req.params.id,

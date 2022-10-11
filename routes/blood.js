@@ -1,15 +1,16 @@
 const router = require("express").Router();
 const Blood = require("../models/Blood");
+const requireUser = require("../middleware/requireUser");
 
-router.post("/", async (req, res) => {
-    const newBlood = new Blood(req.body);
-    try {
-      const savedPost = await newBlood.save();
-      res.status(200).json(savedPost);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  });
+router.post("/", [requireUser], async (req, res) => {
+  const newBlood = new Blood(req.body);
+  try {
+    const savedPost = await newBlood.save();
+    res.status(200).json(savedPost);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;
 
@@ -67,7 +68,6 @@ module.exports = router;
 //     res.status(500).json(err);
 //   }
 // });
-
 
 // get all team members
 //GET ALL POSTS

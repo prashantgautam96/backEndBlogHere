@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Link } = require("react-router-dom");
 
 const BloodSchema = new mongoose.Schema(
   {
@@ -20,10 +19,10 @@ const BloodSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    bloodGroup:{
-        type: String,
-        required: true,
-    }
+    bloodGroup: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

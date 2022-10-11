@@ -2,37 +2,24 @@ const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
 const bcrypt = require("bcrypt");
-
+const requireUser = require("../middleware/requireUser");
 //UPDATE
 // put is used if we want to update
-router.post("/login", async (req, res) => {
-  try {
-    const user = await User.findOne({ username: req.body.username });
-    !user && res.status(400).json("Wrong credentials!");
 
-    const validated = await bcrypt.compare(req.body.password, user.password);
-    !validated && res.status(400).json("Wrong credentials!");
-
-    const { password, ...others } = user._doc;
-    res.status(200).json(others);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+router.put("/hello", (req, res) => {
+  res.send({ status: "updated" });
 });
-router.put("/hello",(req, res) => {
-       res.send({status:"updated"})
-  })
 
-
-router.put("/:id", async (req, res) => {
-  if (req.body.userId === req.params.id) {
+router.put("/:id", [requireUser], async (req, res) => {
+  const user_id = res.locals.user._id;
+  if (req.body.userId === user_id) {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       req.body.password = await bcrypt.hash(req.body.password, salt);
     }
     try {
       const updatedUser = await User.findByIdAndUpdate(
-        req.params.id,
+        user_id,
         {
           $set: req.body,
         },
@@ -48,8 +35,8 @@ router.put("/:id", async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", async (req, res) => {
-  if (req.body.userId === req.params.id ) {
+router.delete("/:id", [requireUser], async (req, res) => {
+  if (res.locals.user.is_super_admin) {
     try {
       const user = await User.findById(req.params.id);
       try {
