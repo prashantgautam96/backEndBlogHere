@@ -1,11 +1,29 @@
+const path = require("path");
 const router = require("express").Router();
 const User = require("../models/User");
 const Post = require("../models/Post");
 const requireUser = require("../middleware/requireUser");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../images/user"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 //CREATE POST
-router.post("/", [requireUser], async (req, res) => {
-  const newPost = new Post({ ...req.body, username: res.locals.user.username });
+router.post("/", [requireUser, upload.single("photo")], async (req, res) => {
+  const newPost = new Post({
+    ...req.body,
+    username: res.locals.user.username,
+    photo: req.file.filename,
+  });
   try {
     const savedPost = await newPost.save();
     res.status(200).json(savedPost);
@@ -16,18 +34,29 @@ router.post("/", [requireUser], async (req, res) => {
 });
 
 //UPDATE POST
-router.put("/:id", [requireUser], async (req, res) => {
+router.put("/:id", [requireUser, upload.single("photo")], async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (post.username === res.locals.User.username) {
       try {
-        const updatedPost = await Post.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-          },
-          { new: true }
-        );
+        let updatedPost;
+        if (req.file) {
+          updatedPost = await Post.findByIdAndUpdate(
+            req.params.id,
+            {
+              $set: { ...req.body, photo: req.file.filename },
+            },
+            { new: true }
+          );
+        } else {
+          updatedPost = await Post.findByIdAndUpdate(
+            req.params.id,
+            {
+              $set: req.body,
+            },
+            { new: true }
+          );
+        }
         res.status(200).json(updatedPost);
       } catch (err) {
         res.status(500).json(err);
