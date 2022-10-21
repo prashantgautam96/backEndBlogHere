@@ -21,13 +21,17 @@ const helmet = require("helmet");
 dotenv.config();
 // app.use(cors);
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "/images")));
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/image", express.static(path.join(__dirname, "./images/user")));
 app.use(deserializeUser);
 // connecting to the mongoDB database
-console.log(process.env.MONGO_URL);
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
