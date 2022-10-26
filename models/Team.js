@@ -15,6 +15,14 @@ const TeamSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    current: {
+      type: Boolean,
+      required:false,
+    },
+    that_year:{
+      type:String,
+      required:true,
+    }
   },
   { timestamps: true }
 );

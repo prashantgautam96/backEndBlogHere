@@ -21,7 +21,7 @@ const upload = multer({ storage: storage });
 router.post("/", [requireUser, upload.single("photo")], async (req, res) => {
   const newPost = new Post({
     ...req.body,
-    username: res.locals.user.username,
+    author: res.locals.user.username,
     photo: req.file.filename,
   });
   try {
@@ -33,7 +33,7 @@ router.post("/", [requireUser, upload.single("photo")], async (req, res) => {
   }
 });
 
-//UPDATE POST
+//UPDATE POST NOW
 router.put("/:id", [requireUser, upload.single("photo")], async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
