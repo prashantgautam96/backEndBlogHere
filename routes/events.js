@@ -3,17 +3,33 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const Event = require("../models/Events");
 const requireUser = require("../middleware/requireUser");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../images/user"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 //CREATE EVENT
-router.post("/", [requireUser], async (req, res) => {
+router.post("/", [requireUser, upload.single("photo")], async (req, res) => {
   const newEvent = new Event({
     ...req.body,
     username: res.locals.user.username,
+    photo: req.file.filename,
   });
   try {
     const savedEvent = await newEvent.save();
     res.status(200).json(savedEvent);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });

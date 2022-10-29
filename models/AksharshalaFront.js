@@ -19,7 +19,7 @@ const AkfrontSchema = new mongoose.Schema(
     },
     link: {
       type: String,
-      required: true,
+      required: false,
     },
     photo: {
       type: String,
@@ -27,7 +27,7 @@ const AkfrontSchema = new mongoose.Schema(
     },
     featured: {
       type: Boolean,
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }

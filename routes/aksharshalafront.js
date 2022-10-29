@@ -1,13 +1,34 @@
 const router = require("express").Router();
 const AksharshalaFront = require("../models/AksharshalaFront");
 const requireUser = require("../middleware/requireUser");
+const multer = require("multer");
+const path = require("path");
 
-router.post("/", [requireUser], async (req, res) => {
-  const newTeam = new AksharshalaFront(req.body);
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../images/user"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+router.post("/", [requireUser, upload.single("photo")], async (req, res) => {
+  console.log(req.body);
+  const newTeam = new AksharshalaFront({
+    ...req.body,
+    featured: false,
+    author: res.locals.user.username,
+    photo: req.file.filename,
+  });
   try {
     const savedPost = await newTeam.save();
     res.status(200).json(savedPost);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
